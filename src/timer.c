@@ -11,6 +11,7 @@ void ISR( void ){
 #endif
 	static uint8_t Edge;
 
+	// インターバルタイマーの割り込み
 	if( INTCONbits.TMR0IF ){
 		gInterval ++;
 		TMR0 -= TIMER0_10MS;
@@ -28,6 +29,10 @@ void ISR( void ){
 	}
 }
 
+/**
+ * タイマー０をインターバルタイマーとして初期化する。
+ * 10mSec毎に割り込み発生設定
+ */
 void InitTimer0( void ){
 	INTCONbits.TMR0IE = true;	// T0OV Interrupt Enable
 	OPTION_REGbits.PSA 		= 0;		// Timer0Prescaler Enable
@@ -35,6 +40,9 @@ void InitTimer0( void ){
 	OPTION_REGbits.TMR0CS 	= 0;		// ClkSrc Fosc/4
 }
 
+/**
+ * Timer1を外部パルスカウンターとして設定する。
+ */
 void InitTimer1ForPlscnt( void ){
 	T1CONbits.T1OSCEN = false;
 	T1CONbits.TMR1CS = 0b10;		// InputClk: T1CKI
@@ -45,6 +53,10 @@ void InitTimer1ForPlscnt( void ){
 	T1CONbits.TMR1ON = true;		// Timer1Start
 }
 
+/**
+ * 外部パルスが入力されている場合、Trueを返却
+ * @return 外部パルス信号　有無
+ */
 uint8_t ExistPulse( void ){
 	static uint16_t Time = T1_SURVIVAL_TIME;
 
@@ -56,7 +68,11 @@ uint8_t ExistPulse( void ){
 	return (Time) ?1 :0;
 }
 
-
+/**
+ * CCP1へのPWM出力設定。
+ * 0で常にLOW。RP2以上で常にHIGH
+ * @param val : PWM_HIGH時間（PR2を最大値とする）
+ */
 void SetPwmCh1( uint16_t val ){
 	if( !val ){
 		CCP1CONbits.CCP1M 	= 0b0000;		// PWM Disable
@@ -74,6 +90,11 @@ void SetPwmCh1( uint16_t val ){
 	}
 }
 
+/**
+ * CCP2へのPWM出力設定。
+ * 0で常にLOW。RP2以上で常にHIGH
+ * @param val : PWM_HIGH時間（PR2を最大値とする）
+ */
 void SetPwmCh2( uint16_t val ){
 
 	if( !val ){
@@ -92,6 +113,9 @@ void SetPwmCh2( uint16_t val ){
 	}
 }
 
+/**
+ * PWM出力関連の初期化(CCP1 CCP2)
+ */
 void InitTimer2ForPwm( void ){
 
 	APFCONbits.CCP1SEL	= 0;		// CCP1 -> RC2

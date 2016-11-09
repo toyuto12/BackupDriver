@@ -1,11 +1,16 @@
 #define DAC_C
 #include "dac.h"
 
-
+/**
+ * DAC関連のポート初期化
+ */
 void InitDacPort( void ){
 	TRISAbits.TRISA2 = 1;
 }
 
+/**
+ * DAC関連のレジスタ初期化
+ */
 void SettingDac( void ){
 	
 	DACCON0bits.DACEN = true;
@@ -15,6 +20,9 @@ void SettingDac( void ){
 	DACCON0bits.DACNSS = 0;			// Vref-: VSS
 }
 
+/**
+ * DAC関連の初期化
+ */
 void InitDac( void ){
 	InitDacPort();
 	SettingDac();

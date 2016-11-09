@@ -4,6 +4,10 @@
 
 #define IS_TXEMPTY		TXSTAbits.TRMT
 
+/**
+ * EUSARTに文字列を出力する
+ * @param dat 文字列へのポインタ
+ */
 void SendEusartStr( uint8_t *dat ){
 	while( *dat ){
 		while( !IS_TXEMPTY );
@@ -12,12 +16,22 @@ void SendEusartStr( uint8_t *dat ){
 	}
 }
 
+/**
+ * EUSARTに文字を出力する
+ * @param dat 一文字
+ */
 void SendEusart( uint8_t dat ){
 	while( !IS_TXEMPTY );
 	TXREG = dat;
 }
 
+
 // BaudRate 57600
+/**
+ * EUSART関連の初期化
+ * BaudRate 57600固定
+ * Txのみ。割り込みなし
+ */
 void InitEusart( void ){
 	
 	APFCONbits.RXSEL = 1;		// RX -> RB7
@@ -39,7 +53,14 @@ void InitEusart( void ){
 	TXSTAbits.TXEN = true;		// TransmitEnable
 }
 
-
+/**
+ * Printu向けの数値データをASCIIに変換。整形する。
+ * @param val 対象の数値データ
+ * @param digit 対象の表示桁数（0埋め）
+ * @param regex 対象の基数
+ * @param isNeg 対象はSignedか？
+ * @return 変換後のデータへのポインタ
+ */
 uint8_t *DigitArrange( uint16_t val, uint8_t digit, uint8_t regex, uint8_t isNeg ){
 	static uint8_t buf[8];
 	uint8_t pos = 6,tmp;

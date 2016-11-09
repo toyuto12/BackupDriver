@@ -5,7 +5,7 @@
 
 // 1Cnt = 10mSec
 #define STATE_CHANGE_DLY	50			// リレー動作から、モータ駆動開始までのディレイ
-#define DETECT_DLY			100			// モータ動作時の戸当り検知安定時間
+#define DETECT_DLY			10			// モータ動作時の戸当り検知安定時間
 
 typedef struct{
 	uint8_t dpsw1	:1;

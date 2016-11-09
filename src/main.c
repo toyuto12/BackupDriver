@@ -9,7 +9,10 @@
 #include "timer.h"
 #include "io.h"
 
-// 32MHzClk
+/**
+ * 動作クロックの初期化を行う
+ * 16MHzクロック
+ */
 void InitClk(void){
 	OSCCONbits.SCS = 0b00;			// Depend on FOSC	
 	OSCCONbits.IRCF = 0b1110;		// Select 16MHzBase
@@ -23,6 +26,7 @@ void main(void) {
 	static uint8_t FlgDly = 0;
 	static uint16_t DoorStopDetectDly = 0;
 	static uint16_t spd=0;
+	static uint8_t StopIntL=false;
 
 	InitClk();
 	
@@ -42,20 +46,19 @@ void main(void) {
 	INTCONbits.GIE = true;		// Interrupt start
 	oLED_DCON = 0;
 
-//	for(;;){
-//		MoveMotor( 300 );
-//	}
-	
 	for(;;){
+
+		TaskAdc();
+		if( ReadAdc(AD_MOTCURR) > MOTOR_CURRENT_LIMIT ) oMOT_BRAKE = false;
+		else oMOT_BRAKE = true;
 
 		// 10mSecInterval
 		if( gInterval > 2 ){
 			gInterval -= 2;
 			
-			TaskAdc();
 			TaskInput( &In );
 			SetPwmCh1( (ExistPulse()) ?25 :500 );		// 外部基板生存時 SNにパルス出力
-			SetPwmCh2(25);							// 自身生存時 SCにパルス出力
+			SetPwmCh2(25);								// 自身生存時 SCにパルス出力
 
 			// 動作開始までに、動作方向を決定する。
 			// ドア動作は、ドア動き出し->ドア動作検知開始->ドア戸当り検知後、状態解除まで停止保持
@@ -66,7 +69,8 @@ void main(void) {
 					if( DoorStopDetectDly < DETECT_DLY ) DoorStopDetectDly ++;
 				}else DoorStopDetectDly = 0;
 
-				if( DoorStopDetectDly == DETECT_DLY ){
+				if( StopIntL || (DoorStopDetectDly == DETECT_DLY) ){
+					StopIntL = true;
 					MoveMotor( 0 );
 				}else{
 					MoveMotor( spd );
@@ -79,6 +83,7 @@ void main(void) {
 				DoorStopDetectDly = 0;
 				INTCONbits.INTE = false;
 				INTCONbits.INTF = false;
+				StopIntL = false;
 			}
 			
 		}

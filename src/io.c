@@ -1,6 +1,11 @@
 #define IO_C
 #include "io.h"
 
+/**
+ * 入力信号から、モータ動作指令を読み取る
+ * @param in デジタル入力信号
+ * @return モータ動作指令
+ */
 uint8_t CheckMoveSig( stInput *in ){
 	static uint8_t r=false;
 	static uint8_t RDly=STATE_CHANGE_DLY;
@@ -16,6 +21,10 @@ uint8_t CheckMoveSig( stInput *in ){
 }
 
 #define CHATA	10
+/**
+ * デジタル信号関連のタスク
+ * @param in デジタル入力信号
+ */
 void TaskInput( stInput *in ){
 	static uint8_t Cnt[7];
 	stInput tmp = {0};
@@ -49,6 +58,9 @@ void TaskInput( stInput *in ){
 	
 }
 
+/**
+ * デジタル入力関係の初期化
+ */
 void InitIoPort( void ){
 	
 	TRISA |=  0xD0;
