@@ -45,7 +45,20 @@ void main(void) {
 	
 	INTCONbits.GIE = true;		// Interrupt start
 	oLED_DCON = 0;
+/*
+	for(;;){
+		TaskAdc();
+		if( ReadAdc(AD_MOTCURR) > MOTOR_CURRENT_LIMIT ) oMOT_BRAKE = false;
+		else oMOT_BRAKE = true;
+		
+		if( gInterval > 2 ){
+			gInterval -= 2;
+			
+			MoveMotor( ReadAdc(AD_VR1) >>5 );
 
+		}
+	}
+*/	
 	for(;;){
 
 		TaskAdc();
@@ -79,7 +92,7 @@ void main(void) {
 				MoveMotor( 0 );
 				DoorStopDetectDly = 0;
 				SetDoorDec( In.dpsw1 );
-				spd = ReadAdc(AD_VR1) >>6;
+				spd = ReadAdc(AD_VR1) >>5;
 				DoorStopDetectDly = 0;
 				INTCONbits.INTE = false;
 				INTCONbits.INTF = false;
