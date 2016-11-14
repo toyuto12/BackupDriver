@@ -15,7 +15,10 @@ uint8_t CheckMoveSig( stInput *in ){
 	
 	if( in->r2_14d ){
 		if( RDly ) RDly--;
-	}else RDly = STATE_CHANGE_DLY;
+	}else{
+		r = false;
+		RDly = STATE_CHANGE_DLY;
+	}
 		
 	return (r && (!RDly));
 }
