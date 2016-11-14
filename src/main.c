@@ -78,7 +78,7 @@ void main(void) {
 			if( CheckMoveSig( &In ) ){
 				INTCONbits.INTE = true;
 
-				if( IsMoveMotorPos() ){
+				if( IsMoveMotorPos( StopIntL ) ){
 					if( DoorStopDetectDly < DETECT_DLY ) DoorStopDetectDly ++;
 				}else DoorStopDetectDly = 0;
 
@@ -93,6 +93,7 @@ void main(void) {
 				DoorStopDetectDly = 0;
 				SetDoorDec( In.dpsw1 );
 				spd = ReadAdc(AD_VR1) >>5;
+                spd =spd+50;
 				DoorStopDetectDly = 0;
 				INTCONbits.INTE = false;
 				INTCONbits.INTF = false;

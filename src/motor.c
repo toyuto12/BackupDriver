@@ -9,10 +9,12 @@
  * モータ位置情報から戸当り状態を検知する。
  * @return 戸当り検知時True
  */
-uint8_t IsMoveMotorPos( void ){
+uint8_t IsMoveMotorPos( uint8_t reset ){
 	static int16_t ExPos = 0x7fff;	// 最大値
 	static uint16_t Dly;
 	uint8_t r = false;
+	
+	if( reset ) ExPos = 0x7fff;
 	
 	if( (gMotorPos > (ExPos+STOP_RANGE)) ||
 			(gMotorPos < (ExPos-STOP_RANGE)) ){
