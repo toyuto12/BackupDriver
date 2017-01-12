@@ -70,8 +70,8 @@ void main(void) {
 			gInterval -= 2;
 			
 			TaskInput( &In );
-			SetPwmCh1( (ExistPulse()) ?25 :500 );		// 外部基板生存時 SNにパルス出力
-			SetPwmCh2(25);								// 自身生存時 SCにパルス出力
+			SetPwmCh1( (ExistPulse()) ?50 :500 );		// 外部基板生存時 SNにパルス出力
+			SetPwmCh2(50);								// 自身生存時 SCにパルス出力
 
 			// 動作開始までに、動作方向を決定する。
 			// ドア動作は、ドア動き出し->ドア動作検知開始->ドア戸当り検知後、状態解除まで停止保持

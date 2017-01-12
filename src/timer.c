@@ -126,7 +126,7 @@ void InitTimer2ForPwm( void ){
 	T2CONbits.T2CKPS 	= 0b10;		// Prescaler 1/16 -> 500kHz/Cnt
 //	T2CONbits.T2CKPS 	= 0b11;		// Prescaler 1/64
 	T2CONbits.T2OUTPS 	= 0b1111;	// Postscaler 1/16
-	PR2 = 50;
+	PR2 = 100;
 
 	T2CONbits.TMR2ON 	= true;		// Timer2 Start
 }
