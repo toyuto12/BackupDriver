@@ -6,6 +6,25 @@
 #include "eusart.h"
 
 /**
+ * 速度VRとDIPSWの状態から、モータ指令値を算出する
+ * @param sw	: DIPSWの状態
+ * @param val	: 速度VRのAD値
+ * @return	: 速度指令値
+ */
+int16_t ReadMotorSpeed( uint8_t sw, int16_t val ){
+	double gain;
+	
+	if( sw ){
+		gain = (double)( MOTSPD_DIPSWON_MAX - MOTSPD_DIPSWON_MIN ) /4096;
+		val = (int16_t)((val *gain) +MOTSPD_DIPSWON_MIN);
+	}else{
+		gain = (double)( MOTSPD_DIPSWOFF_MAX - MOTSPD_DIPSWOFF_MIN ) /4096;
+		val = (int16_t)((val *gain) +MOTSPD_DIPSWOFF_MIN);
+	}
+	return val;
+}
+
+/**
  * モータ位置情報から戸当り状態を検知する。
  * @return 戸当り検知時True
  */

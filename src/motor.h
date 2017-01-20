@@ -11,6 +11,12 @@
 										// 電流制限値(ADC) = ((制限設定値*検知抵抗値) *非反転回路増幅率 ) / (VCC/12BitADC)
 										// 2560 = (( 2.5A *0.05Ω ) *25 ) / (5V/4096)
 
+#define MOTSPD_DIPSWOFF_MIN		50		// DIPSWがOFFの時の速度VRの範囲　最小値（0-255)
+#define MOTSPD_DIPSWOFF_MAX		178		// DIPSWがOFFの時の速度VRの範囲　最大値（0-255)
+#define MOTSPD_DIPSWON_MIN		15		// DIPSWがONの時の速度VRの範囲　最小値（0-255)
+#define MOTSPD_DIPSWON_MAX		178		// DIPSWがONの時の速度VRの範囲　最大値（0-255)
+
+int16_t ReadMotorSpeed( uint8_t sw, int16_t val );
 uint8_t IsMoveMotorPos( uint8_t reset );
 void SetDoorDec( uint8_t dec );
 void MoveMotor( int16_t val );

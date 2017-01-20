@@ -26,8 +26,8 @@ void main(void) {
 	static uint8_t FlgDly = 0;
 	static uint16_t DoorStopDetectDly = 0;
 	static uint16_t spd=0;
-	static uint8_t StopIntL=false;
-
+	static uint8_t StopIntL=false;	
+	
 	InitClk();
 	
 	oMOT_60_120 = true;
@@ -92,8 +92,11 @@ void main(void) {
 				MoveMotor( 0 );
 				DoorStopDetectDly = 0;
 				SetDoorDec( In.dpsw1 );
-				spd = ReadAdc(AD_VR1) >>5;
-                spd =spd+50;
+				
+				spd = ReadMotorSpeed( In.dpsw2, ReadAdc(AD_VR1) );
+				// spd = ReadAdc(AD_VR1) >>5;
+                // spd =spd+50;
+				
 				DoorStopDetectDly = 0;
 				INTCONbits.INTE = false;
 				INTCONbits.INTF = false;
