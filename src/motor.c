@@ -82,7 +82,7 @@ void MoveMotor( int16_t val ){
 		oMOT_EN = false;
 		if( val < -255 ) val = -255;
 
-		if( ExVal > val ) ExVal += 3;
+		if( ExVal > val ) ExVal -= 3;
 		if( ExVal < val ) ExVal = val;
 		OUTPUT_DA(-ExVal);
 	}else{
