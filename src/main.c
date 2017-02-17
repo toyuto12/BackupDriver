@@ -62,10 +62,10 @@ void main(void) {
 	for(;;){
 
 		TaskAdc();
-		if( ReadAdc(AD_MOTCURR) > MOTOR_CURRENT_LIMIT ){
-			oMOT_BRAKE = false;
-			if( In.dpsw2 ) MoveMotor( 0 );				// 白いモータの時は一度速度を０に落とす
-		}else oMOT_BRAKE = true;
+		if( !isMotorStartup() && (ReadAdc(AD_MOTCURR) > MOTOR_CURRENT_LIMIT) ){
+			ForceCntMotorDisable( true );
+			// if( In.dpsw2 ) MoveMotor( 0 );				// 白いモータの時は一度速度を０に落とす
+		}else ForceCntMotorDisable( false );
 
 		// 10mSecInterval
 		if( gInterval > 2 ){

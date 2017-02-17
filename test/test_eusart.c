@@ -2,6 +2,7 @@
 
 uint8_t *DigitArrange( uint16_t val, uint8_t digit, uint8_t regex, uint8_t isNeg );
 
+
 void test_digitArrenge(void){
 	STR_EQ( " 0", DigitArrange( 0, 0, 10, 0 ));
 	STR_EQ( " 10", DigitArrange( 10, 0, 10, 0 ));

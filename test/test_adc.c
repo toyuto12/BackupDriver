@@ -1,7 +1,6 @@
 #include "helper.h"
 #include "adc.h"
 
-
 void test_ReadAdc(void){
 	uint8_t i;
 

@@ -5,6 +5,8 @@
 #include "timer.h"
 #include "eusart.h"
 
+static uint8_t sStartupCount=0;		// モータのスタートアップ区間計測用
+
 /**
  * 速度VRとDIPSWの状態から、モータ指令値を算出する
  * @param sw	: DIPSWの状態
@@ -56,6 +58,23 @@ void SetDoorDec( uint8_t dec ){
 	sMotorDec = (dec) ?1 :0;
 }
 
+uint8_t sExtMotorDisSig = false;
+/**
+ * モータ動作をmotor.c外から強制的に停止させる
+ * @param en 指令
+ */
+void ForceCntMotorDisable( uint8_t dis ){
+	sExtMotorDisSig = ( dis ) ?1 :0;
+}
+
+/**
+ * モータ動作のスタートアップ区間を検出する
+ * @return スタートアップ区間である
+ */
+uint8_t isMotorStartup( void ){
+	return ( sStartupCount < MOTOR_STARTUP_TIME ) ?1 :0 ;
+}
+
 /**
  * モータの動作設定を指定する。
  * 0でモータDisableにする。
@@ -69,23 +88,36 @@ void MoveMotor( int16_t val ){
 //	oMOT_BRAKE = true;			// Trueで解除
 
 	oMOT_BRAKE = true;
-	if( val > 0 ){
+	if( val > 0 ){		
 		oMOT_DEC = sMotorDec;
-		oMOT_EN = false;
-		if( val > 255 ) val = 255;
+		if( sStartupCount < MOTOR_STARTUP_TIME ) sStartupCount ++;
+		
+		if( sExtMotorDisSig ){
+			oMOT_EN = true;
+		}else{
+			oMOT_EN = false;
+			if( val > 255 ) val = 255;
 
-		if ( ExVal < val ) ExVal +=3;
-		if ( ExVal > val ) ExVal = val;
-		OUTPUT_DA(ExVal);
+			if ( ExVal < val ) ExVal +=3;
+			if ( ExVal > val ) ExVal = val;
+			OUTPUT_DA(ExVal);
+		}
 	}else if( val < 0 ){
 		oMOT_DEC = !sMotorDec;
-		oMOT_EN = false;
-		if( val < -255 ) val = -255;
+		if( sStartupCount < MOTOR_STARTUP_TIME ) sStartupCount ++;
+		
+		if( sExtMotorDisSig ){
+			oMOT_EN = true;
+		}else{
+			oMOT_EN = false;
+			if( val < -255 ) val = -255;
 
-		if( ExVal > val ) ExVal -= 3;
-		if( ExVal < val ) ExVal = val;
-		OUTPUT_DA(-ExVal);
+			if( ExVal > val ) ExVal -= 3;
+			if( ExVal < val ) ExVal = val;
+			OUTPUT_DA(-ExVal);			
+		}
 	}else{
+		sStartupCount = 0;
 		oMOT_EN = true;
 		OUTPUT_DA( val );
 		ExVal = val;
